@@ -10,11 +10,15 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
+
+import java.util.HashMap;
 
 import ke.co.edgar.waks.LoginActivity;
 import ke.co.edgar.waks.R;
@@ -25,6 +29,8 @@ public class MainFragment extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private SessionManager session;
     private SQLiteHandler db;
+    private TextView txtName;
+    private TextView txtEmail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,12 +57,28 @@ public class MainFragment extends AppCompatActivity
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
-
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        View header = LayoutInflater.from(this).inflate(R.layout.nav_header_main_fragment, null);
+        navigationView.addHeaderView(header);
+         txtName= (TextView) header.findViewById(R.id.userName);
+         txtEmail= (TextView) header.findViewById(R.id.userEmail);
+        // SqLite database handler
+        db = new SQLiteHandler(getApplicationContext());
+        // session manager
+        session = new SessionManager(getApplicationContext());
+        // Fetching user details from SQLite
+        HashMap<String, String> user = db.getUserDetails();
+
+        String name = user.get("name");
+        String email = user.get("email");
+
+        // Displaying the user details on the screen
+        txtName.setText(name);
+        txtEmail.setText(email);
 
         if (!session.isLoggedIn()) {
-            // User is already logged in. Take him to main activity
+            logoutUser();
             Intent intent = new Intent(MainFragment.this, LoginActivity.class);
             startActivity(intent);
             finish();
@@ -123,5 +145,13 @@ public class MainFragment extends AppCompatActivity
         return true;
     }
 
+    private void logoutUser() {
+        session.setLogin(false);
 
+        db.deleteUsers();
+        // Launching the login activity
+        Intent intent = new Intent(MainFragment.this, LoginActivity.class);
+        startActivity(intent);
+        finish();
+    }
 }
