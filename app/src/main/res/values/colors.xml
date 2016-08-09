@@ -37,6 +37,9 @@
     <color name="lbl_name">#333333</color>
     <color name="btn_logut_bg">#ff6861</color>
 
+    <color name="year">#999999</color>
+    <color name="title">#222222</color>
+
 
     <array name="array_dot_active">
         <item>@color/dot_light_screen1</item>
