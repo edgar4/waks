@@ -37,7 +37,8 @@
             android:name=".fragments.MainFragment"
             android:label="@string/title_activity_main_fragment"
             android:theme="@style/AppTheme" />
-        <activity android:name=".LogOutActivity"></activity>
+        <activity android:name=".LogOutActivity" />
+        <activity android:name=".fragments.pages.DashBoard"></activity>
     </application>
 
 </manifest>
