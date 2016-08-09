@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?android:attr/selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true"
+    android:orientation="vertical"
+    android:paddingBottom="10dp"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingTop="10dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Tinker IO , Nairobi Kenya"
+        android:id="@+id/location"
+        android:layout_below="@+id/divider"
+        android:layout_alignLeft="@+id/job_title"
+        android:layout_alignStart="@+id/job_title"
+        android:layout_marginTop="2dp"
+        android:textStyle="normal|italic"
+        android:textSize="12sp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="freelance"
+        android:id="@+id/textView"
+        android:textSize="12sp"
+        android:textColor="@color/abc_primary_text_material_light"
+        android:layout_alignBottom="@+id/divider"
+        android:layout_toLeftOf="@+id/divider"
+        android:layout_toStartOf="@+id/divider"
+        android:layout_marginRight="5dp"
+        android:textStyle="italic" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="|"
+        android:id="@+id/divider"
+        android:textColor="@color/abc_primary_text_material_light"
+        android:layout_alignBaseline="@+id/post_time"
+        android:layout_alignBottom="@+id/post_time"
+        android:layout_toLeftOf="@+id/post_time"
+        android:layout_toStartOf="@+id/post_time"
+        android:layout_marginRight="5dp"
+        android:textStyle="italic"
+        android:textSize="12sp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="2hrs ago"
+        android:id="@+id/post_time"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:textSize="12sp"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/abc_primary_text_material_light"
+        android:textStyle="italic" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Full stack developer"
+        android:id="@+id/job_title"
+        android:layout_marginRight="14dp"
+        android:layout_marginEnd="14dp"
+        android:textColor="@color/abc_primary_text_material_light"
+        android:layout_below="@+id/location"
+        android:layout_toLeftOf="@+id/textView"
+        android:layout_toStartOf="@+id/textView"
+        android:layout_marginTop="5dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="lorem ipsum solorem ipsum solorem ipsum so"
+        android:id="@+id/description"
+        android:layout_below="@+id/job_title"
+        android:layout_alignLeft="@+id/job_title"
+        android:layout_alignStart="@+id/job_title"
+        android:layout_marginTop="5dp"
+        android:textSize="13sp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="salary:"
+        android:id="@+id/salary"
+        android:layout_below="@+id/description"
+        android:layout_alignRight="@+id/textView"
+        android:layout_alignEnd="@id/divider"
+        android:textColor="@color/abc_primary_text_material_light"
+        android:textSize="12sp"
+        android:layout_marginTop="5dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="100,000"
+        android:id="@+id/salary_amount"
+        android:layout_alignBottom="@+id/salary"
+        android:layout_alignLeft="@+id/divider"
+        android:layout_alignStart="@+id/divider"
+        android:textColor="@color/abc_primary_text_disable_only_material_light"
+        android:textSize="12sp"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="10dp" />
+
+</RelativeLayout>

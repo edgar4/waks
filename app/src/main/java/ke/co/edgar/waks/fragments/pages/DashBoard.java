@@ -21,28 +21,32 @@ import java.util.List;
 import ke.co.edgar.waks.R;
 
 public class DashBoard extends Fragment  {
-    private List<Movie> movieList = new ArrayList<>();
+    private List<Job> jobList = new ArrayList<>();
     private RecyclerView recyclerView;
-    private MoviesAdapter mAdapter;
+    private JobsAdapter mAdapter;
     @Nullable
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
         RelativeLayout rootView =  (RelativeLayout) inflater.inflate(R.layout.dashboard_layout, container, false);
         recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
-        mAdapter = new MoviesAdapter(movieList);
+        mAdapter = new JobsAdapter(jobList);
         recyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        RecyclerView.ItemAnimator itemAnimator = new DefaultItemAnimator();
+        itemAnimator.setAddDuration(1000);
+        itemAnimator.setRemoveDuration(1000);
+        recyclerView.setItemAnimator(itemAnimator);
+        //recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(mAdapter);
 
         recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getActivity().getApplicationContext(), recyclerView, new ClickListener() {
             @Override
             public void onClick(View view, int position) {
-                Movie movie = movieList.get(position);
-                Toast.makeText(getActivity().getApplicationContext(), movie.getTitle() + " is selected!", Toast.LENGTH_SHORT).show();
+                Job job = jobList.get(position);
+                Toast.makeText(getActivity().getApplicationContext(), job.getTitle() + " is selected!", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -57,53 +61,28 @@ public class DashBoard extends Fragment  {
     }
 
     private void prepareMovieData() {
-        Movie movie = new Movie("Mad Max: Fury Road", "Action & Adventure", "2015");
-        movieList.add(movie);
+        Job job = new Job("3D Motion Graphics Designer (Stamford, CT)", "Whatever the time, place or conditions, just lift up your head, breathe and stride out! Running is a great way to feel better in body and mind, push yourself, unwind and explore. Designed for runners of all abilities and aspirations", "2 second ago","Tinker IO , Nairobi","500,000");
+        jobList.add(job);
 
-        movie = new Movie("Inside Out", "Animation, Kids & Family", "2015");
-        movieList.add(movie);
+        job = new Job("Sr. Visual Designer (UI/UX)", "Whatever the time, place or conditions, just lift up your head, breathe and stride out! Running is a great way to feel better in body and mind, push yourself, unwind and explore. Designed for runners of all abilities and aspirations", "10 second ago","Tinker IO , Nairobi","100,000");
+        jobList.add(job);
 
-        movie = new Movie("Star Wars: Episode VII - The Force Awakens", "Action", "2015");
-        movieList.add(movie);
+        job = new Job("SHOES DESIGNER", "Whatever the time, place or conditions, just lift up your head, breathe and stride out! Running is a great way to feel better in body and mind, push yourself, unwind and explore. Designed for runners of all abilities and aspirations", "14 minutes ago","Tinker IO , Nairobi","20,000");
+        jobList.add(job);
 
-        movie = new Movie("Shaun the Sheep", "Animation", "2015");
-        movieList.add(movie);
+        job = new Job("Shaun the Sheep", "Whatever the time, place or conditions, just lift up your head, breathe and stride out! Running is a great way to feel better in body and mind, push yourself, unwind and explore. Designed for runners of all abilities and aspirationsn", "30 minutes ago","Tinker IO , Nairobi","300,000");
+        jobList.add(job);
 
-        movie = new Movie("The Martian", "Science Fiction & Fantasy", "2015");
-        movieList.add(movie);
+        job = new Job("The Martian", "Whatever the time, place or conditions, just lift up your head, breathe and stride out! Running is a great way to feel better in body and mind, push yourself, unwind and explore. Designed for runners of all abilities and aspirations", "1hour ago","Tinker IO , Nairobi","1000,000");
+        jobList.add(job);
 
-        movie = new Movie("Mission: Impossible Rogue Nation", "Action", "2015");
-        movieList.add(movie);
+        job = new Job("Mission: Impossible Rogue Nation", "Whatever the time, place or conditions, just lift up your head, breathe and stride out! Running is a great way to feel better in body and mind, push yourself, unwind and explore. Designed for runners of all abilities and aspirations", "2hours ago","Tinker IO , Nairobi","200,000");
+        jobList.add(job);
 
-        movie = new Movie("Up", "Animation", "2009");
-        movieList.add(movie);
+        job = new Job("Up", "Whatever the time, place or conditions, just lift up your head, breathe and stride out! Running is a great way to feel better in body and mind, push yourself, unwind and explore. Designed for runners of all abilities and aspirations", "3days ag0","Tinker IO , Nairobi","150,000");
+        jobList.add(job);
 
-        movie = new Movie("Star Trek", "Science Fiction", "2009");
-        movieList.add(movie);
 
-        movie = new Movie("The LEGO Movie", "Animation", "2014");
-        movieList.add(movie);
-
-        movie = new Movie("Iron Man", "Action & Adventure", "2008");
-        movieList.add(movie);
-
-        movie = new Movie("Aliens", "Science Fiction", "1986");
-        movieList.add(movie);
-
-        movie = new Movie("Chicken Run", "Animation", "2000");
-        movieList.add(movie);
-
-        movie = new Movie("Back to the Future", "Science Fiction", "1985");
-        movieList.add(movie);
-
-        movie = new Movie("Raiders of the Lost Ark", "Action & Adventure", "1981");
-        movieList.add(movie);
-
-        movie = new Movie("Goldfinger", "Action & Adventure", "1965");
-        movieList.add(movie);
-
-        movie = new Movie("Guardians of the Galaxy", "Science Fiction & Fantasy", "2014");
-        movieList.add(movie);
 
         mAdapter.notifyDataSetChanged();
     }
