@@ -24,7 +24,9 @@ import java.util.HashMap;
 
 import ke.co.edgar.waks.LoginActivity;
 import ke.co.edgar.waks.R;
+import ke.co.edgar.waks.fragments.pages.ApplicationFragment;
 import ke.co.edgar.waks.fragments.pages.DashBoard;
+import ke.co.edgar.waks.fragments.pages.PreferencesFragment;
 import ke.co.edgar.waks.fragments.pages.ProfileFragment;
 import ke.co.edgar.waks.helper.SQLiteHandler;
 import ke.co.edgar.waks.helper.SessionManager;
@@ -152,13 +154,19 @@ public class MainFragment extends AppCompatActivity
             setTitle("DashBoard");
 
         } else if (id == R.id.nav_application) {
-            ProfileFragment profile= new ProfileFragment();
-            transaction.replace(R.id.fragment_container,profile).commit();
-            setTitle("profile");
+            ApplicationFragment application= new ApplicationFragment();
+            transaction.replace(R.id.fragment_container,application).commit();
+            setTitle("My job Applications");
 
         } else if (id == R.id.nav_profile) {
+            ProfileFragment profile= new ProfileFragment();
+            transaction.replace(R.id.fragment_container,profile).commit();
+            setTitle("My profile");
 
         } else if (id == R.id.nav_setting) {
+            PreferencesFragment preference = new PreferencesFragment();
+            transaction.replace(R.id.fragment_container,preference).commit();
+            setTitle("Preferences");
 
         } else if (id == R.id.nav_logout) {
             session.setLogin(false);
