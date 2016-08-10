@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -23,22 +25,17 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.ocpsoft.prettytime.PrettyTime;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import ke.co.edgar.waks.R;
 import ke.co.edgar.waks.app.AppConfig;
-import ke.co.edgar.waks.app.AppController;
 
 
 public class DashBoard extends Fragment {
@@ -71,6 +68,16 @@ public class DashBoard extends Fragment {
             public void onClick(View view, int position) {
                 Job job = jobList.get(position);
                 Toast.makeText(getActivity().getApplicationContext(), job.getTitle() + " is selected!", Toast.LENGTH_SHORT).show();
+                startDetailFragment(job.getID());
+                getActivity().finish();
+            }
+
+            private void startDetailFragment(int jobID) {
+
+                Intent intent = new Intent(getActivity(), DetailActivity.class);
+                intent.putExtra("jobID", jobID);
+                startActivity(intent);
+
             }
 
             @Override
@@ -111,7 +118,7 @@ public class DashBoard extends Fragment {
                                 for (int i = 0; i < jobs.length(); i++) {
                                     Log.d(TAG, "LoopJob: ");
                                     JSONObject j = (JSONObject) jobs.get(i);
-                                    int  id = j.getInt("id");
+                                    int id = j.getInt("id");
                                     String title = j.getString("title");
                                     String description = j.getString("description");
                                     String type = j.getString("type");
@@ -119,13 +126,13 @@ public class DashBoard extends Fragment {
                                     String location = j.getString("location");
                                     String created_at = j.getString("time_posted");
                                     Log.d(TAG, "LoopDone: ");
-                                    Job addjob = new Job(id,title, description, created_at, location, salaryAmount,type);
+                                    Job addjob = new Job(id, title, description, created_at, location, salaryAmount, type);
                                     jobList.add(addjob);
 
                                     Log.d(TAG, "addingJobs: " + title);
                                 }
 
-                                  mAdapter.notifyDataSetChanged();
+                                mAdapter.notifyDataSetChanged();
                             } else {
                                 // Error in login. Get the error message
                                 String errorMsg = jObj.getString("error_msg");

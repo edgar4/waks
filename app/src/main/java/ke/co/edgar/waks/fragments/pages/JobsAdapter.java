@@ -24,7 +24,6 @@ public class JobsAdapter extends RecyclerView.Adapter<JobsAdapter.MyViewHolder> 
             post_time = (TextView) view.findViewById(R.id.post_time);
             salaryAmount = (TextView) view.findViewById(R.id.salary_amount);
             location = (TextView) view.findViewById(R.id.location);
-
             type  = (TextView)  view.findViewById(R.id.type);
         }
     }
@@ -50,6 +49,7 @@ public class JobsAdapter extends RecyclerView.Adapter<JobsAdapter.MyViewHolder> 
         holder.post_time.setText(job.getPostTime());
         holder.salaryAmount.setText(job.getSalaryAmount());
         holder.location.setText(job.getLocation());
+        holder.type.setText(job.getType());
     }
 
     @Override
