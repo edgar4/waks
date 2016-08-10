@@ -73,8 +73,8 @@ public class MainFragment extends AppCompatActivity
 
         View header = LayoutInflater.from(this).inflate(R.layout.nav_header_main_fragment, null);
         navigationView.addHeaderView(header);
-         txtName= (TextView) header.findViewById(R.id.userName);
-         txtEmail= (TextView) header.findViewById(R.id.userEmail);
+        txtName = (TextView) header.findViewById(R.id.userName);
+        txtEmail = (TextView) header.findViewById(R.id.userEmail);
         // SqLite database handler
         db = new SQLiteHandler(getApplicationContext());
         // session manager
@@ -104,7 +104,7 @@ public class MainFragment extends AppCompatActivity
         sendIntent.putExtra(Intent.EXTRA_SUBJECT, "Need a job? Checkout this App!!");
         sendIntent.putExtra(Intent.EXTRA_TEXT, "WAQ  finds you, your perfect job download at http://goo.gl/SD5WG1");
         sendIntent.setType("text/plain");
-        startActivity(Intent.createChooser(sendIntent,"share WAQ"));
+        startActivity(Intent.createChooser(sendIntent, "share WAQ"));
     }
 
     @Override
@@ -130,12 +130,10 @@ public class MainFragment extends AppCompatActivity
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -148,26 +146,21 @@ public class MainFragment extends AppCompatActivity
         FragmentTransaction transaction = fragmentManager.beginTransaction();
 
         if (id == R.id.nav_dashboard) {
-
             DashBoard dashBoard = new DashBoard();
             transaction.replace(R.id.fragment_container, dashBoard).commit();
             setTitle("DashBoard");
-
         } else if (id == R.id.nav_application) {
-            ApplicationFragment application= new ApplicationFragment();
-            transaction.replace(R.id.fragment_container,application).commit();
+            ApplicationFragment application = new ApplicationFragment();
+            transaction.replace(R.id.fragment_container, application).commit();
             setTitle("My job Applications");
-
         } else if (id == R.id.nav_profile) {
-            ProfileFragment profile= new ProfileFragment();
-            transaction.replace(R.id.fragment_container,profile).commit();
+            ProfileFragment profile = new ProfileFragment();
+            transaction.replace(R.id.fragment_container, profile).commit();
             setTitle("My profile");
-
         } else if (id == R.id.nav_setting) {
             PreferencesFragment preference = new PreferencesFragment();
-            transaction.replace(R.id.fragment_container,preference).commit();
+            transaction.replace(R.id.fragment_container, preference).commit();
             setTitle("Preferences");
-
         } else if (id == R.id.nav_logout) {
             session.setLogin(false);
             Intent intent = new Intent(MainFragment.this,
@@ -175,7 +168,6 @@ public class MainFragment extends AppCompatActivity
             startActivity(intent);
             finish();
         }
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
@@ -183,9 +175,7 @@ public class MainFragment extends AppCompatActivity
 
     private void logoutUser() {
         session.setLogin(false);
-
         db.deleteUsers();
-        // Launching the login activity
         Intent intent = new Intent(MainFragment.this, LoginActivity.class);
         startActivity(intent);
         finish();
