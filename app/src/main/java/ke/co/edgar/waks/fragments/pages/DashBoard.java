@@ -1,12 +1,15 @@
 package ke.co.edgar.waks.fragments.pages;
 
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -15,26 +18,47 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.ocpsoft.prettytime.PrettyTime;
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import ke.co.edgar.waks.R;
+import ke.co.edgar.waks.app.AppConfig;
+import ke.co.edgar.waks.app.AppController;
 
-public class DashBoard extends Fragment  {
+
+public class DashBoard extends Fragment {
     private List<Job> jobList = new ArrayList<>();
     private RecyclerView recyclerView;
     private JobsAdapter mAdapter;
+    private ProgressDialog pDialog;
+    private static final String TAG = DashBoard.class.getSimpleName();
+
     @Nullable
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
-        RelativeLayout rootView =  (RelativeLayout) inflater.inflate(R.layout.dashboard_layout, container, false);
+        RelativeLayout rootView = (RelativeLayout) inflater.inflate(R.layout.dashboard_layout, container, false);
         recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
         mAdapter = new JobsAdapter(jobList);
         recyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);
-        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
+        // recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
         RecyclerView.ItemAnimator itemAnimator = new DefaultItemAnimator();
         itemAnimator.setAddDuration(1000);
         itemAnimator.setRemoveDuration(1000);
@@ -54,37 +78,76 @@ public class DashBoard extends Fragment  {
 
             }
         }));
-
+        // Progress dialog
+        pDialog = new ProgressDialog(getActivity());
+        pDialog.setCancelable(false);
         prepareMovieData();
 
         return rootView;
     }
 
     private void prepareMovieData() {
-        Job job = new Job("3D Motion Graphics Designer (Stamford, CT)", "Whatever the time, place or conditions, just lift up your head, breathe and stride out! Running is a great way to feel better in body and mind, push yourself, unwind and explore. Designed for runners of all abilities and aspirations", "2 second ago","Tinker IO , Nairobi","500,000");
-        jobList.add(job);
 
-        job = new Job("Sr. Visual Designer (UI/UX)", "Whatever the time, place or conditions, just lift up your head, breathe and stride out! Running is a great way to feel better in body and mind, push yourself, unwind and explore. Designed for runners of all abilities and aspirations", "10 second ago","Tinker IO , Nairobi","100,000");
-        jobList.add(job);
+        // Tag used to cancel the request
+        pDialog.setMessage("Downloading New Jobs");
+        showDialog();
+        RequestQueue queue = Volley.newRequestQueue(getActivity());
+        JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, AppConfig.URL_JOBS, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        // display response
+                        Log.d("Response", response.toString());
 
-        job = new Job("SHOES DESIGNER", "Whatever the time, place or conditions, just lift up your head, breathe and stride out! Running is a great way to feel better in body and mind, push yourself, unwind and explore. Designed for runners of all abilities and aspirations", "14 minutes ago","Tinker IO , Nairobi","20,000");
-        jobList.add(job);
+                        try {
+                            JSONObject jObj = response;
+                            boolean error = false;
+                            if (!error) {
+                                Log.d(TAG, "we never get here ");
+                                JSONArray jobs = jObj.getJSONArray("jobs");
 
-        job = new Job("Shaun the Sheep", "Whatever the time, place or conditions, just lift up your head, breathe and stride out! Running is a great way to feel better in body and mind, push yourself, unwind and explore. Designed for runners of all abilities and aspirationsn", "30 minutes ago","Tinker IO , Nairobi","300,000");
-        jobList.add(job);
+                                Log.d(TAG, "get array from obj" + jobs);
+                                Log.d(TAG, "size" + jobs.length());
+                                for (int i = 0; i < jobs.length(); i++) {
+                                    Log.d(TAG, "LoopJob: ");
+                                    JSONObject j = (JSONObject) jobs.get(i);
+                                    int  id = j.getInt("id");
+                                    String title = j.getString("title");
+                                    String description = j.getString("description");
+                                    String type = j.getString("type");
+                                    String salaryAmount = j.getString("salary");
+                                    String location = j.getString("location");
+                                    String created_at = j.getString("time_posted");
+                                    Log.d(TAG, "LoopDone: ");
+                                    Job addjob = new Job(id,title, description, created_at, location, salaryAmount,type);
+                                    jobList.add(addjob);
 
-        job = new Job("The Martian", "Whatever the time, place or conditions, just lift up your head, breathe and stride out! Running is a great way to feel better in body and mind, push yourself, unwind and explore. Designed for runners of all abilities and aspirations", "1hour ago","Tinker IO , Nairobi","1000,000");
-        jobList.add(job);
+                                    Log.d(TAG, "addingJobs: " + title);
+                                }
 
-        job = new Job("Mission: Impossible Rogue Nation", "Whatever the time, place or conditions, just lift up your head, breathe and stride out! Running is a great way to feel better in body and mind, push yourself, unwind and explore. Designed for runners of all abilities and aspirations", "2hours ago","Tinker IO , Nairobi","200,000");
-        jobList.add(job);
-
-        job = new Job("Up", "Whatever the time, place or conditions, just lift up your head, breathe and stride out! Running is a great way to feel better in body and mind, push yourself, unwind and explore. Designed for runners of all abilities and aspirations", "3days ag0","Tinker IO , Nairobi","150,000");
-        jobList.add(job);
-
-
-
-        mAdapter.notifyDataSetChanged();
+                                  mAdapter.notifyDataSetChanged();
+                            } else {
+                                // Error in login. Get the error message
+                                String errorMsg = jObj.getString("error_msg");
+                                Toast.makeText(getActivity().getApplicationContext(),
+                                        errorMsg, Toast.LENGTH_LONG).show();
+                            }
+                        } catch (JSONException e) {
+                            // JSON error
+                            e.printStackTrace();
+                            Toast.makeText(getActivity().getApplicationContext(), "Error Downloading Jobs: ", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d("Error.Response", "could not process json");
+                    }
+                }
+        );
+        queue.add(getRequest);
+        hideDialog();
     }
 
     public interface ClickListener {
@@ -136,4 +199,13 @@ public class DashBoard extends Fragment  {
         }
     }
 
+    private void showDialog() {
+        if (!pDialog.isShowing())
+            pDialog.show();
+    }
+
+    private void hideDialog() {
+        if (pDialog.isShowing())
+            pDialog.dismiss();
+    }
 }

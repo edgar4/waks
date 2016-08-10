@@ -15,7 +15,7 @@ public class JobsAdapter extends RecyclerView.Adapter<JobsAdapter.MyViewHolder> 
     private List<Job> JobsList;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        public TextView title, post_time, description, salaryAmount,location;
+        public TextView title, post_time, description, salaryAmount,location,type;
 
         public MyViewHolder(View view) {
             super(view);
@@ -24,6 +24,8 @@ public class JobsAdapter extends RecyclerView.Adapter<JobsAdapter.MyViewHolder> 
             post_time = (TextView) view.findViewById(R.id.post_time);
             salaryAmount = (TextView) view.findViewById(R.id.salary_amount);
             location = (TextView) view.findViewById(R.id.location);
+
+            type  = (TextView)  view.findViewById(R.id.type);
         }
     }
 

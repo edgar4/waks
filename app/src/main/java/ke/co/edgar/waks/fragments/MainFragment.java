@@ -51,8 +51,7 @@ public class MainFragment extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                shareWaks();
             }
         });
 
@@ -95,6 +94,15 @@ public class MainFragment extends AppCompatActivity
             finish();
         }
 
+    }
+
+    private void shareWaks() {
+        Intent sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_SEND);
+        sendIntent.putExtra(Intent.EXTRA_SUBJECT, "Need a job? Checkout this App!!");
+        sendIntent.putExtra(Intent.EXTRA_TEXT, "WAQ  finds you, your perfect job download at http://goo.gl/SD5WG1");
+        sendIntent.setType("text/plain");
+        startActivity(Intent.createChooser(sendIntent,"share WAQ"));
     }
 
     @Override

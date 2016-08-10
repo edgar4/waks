@@ -6,4 +6,6 @@ public class AppConfig {
 
 	// Server user register url
 	public static String URL_REGISTER = "http://10.0.3.2/android_login_api/register.php";
+
+	public static String URL_JOBS = "http://10.0.3.2/android_login_api/job.php";
 }
