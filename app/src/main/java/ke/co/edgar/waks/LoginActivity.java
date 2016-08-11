@@ -5,6 +5,9 @@
  */
 package ke.co.edgar.waks;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -61,7 +64,7 @@ public class LoginActivity extends AppCompatActivity {
 
         // Session manager
         session = new SessionManager(getApplicationContext());
-
+        createNotification();
         // Check if user is already logged in or not
         if (session.isLoggedIn()) {
             // User is already logged in. Take him to main activity
@@ -198,5 +201,26 @@ public class LoginActivity extends AppCompatActivity {
             pDialog.dismiss();
     }
 
+    public void createNotification() {
+        // Prepare intent which is triggered if the
+        // notification is selected
+        Intent intent = new Intent(this, MainFragment.class);
+        PendingIntent pIntent = PendingIntent.getActivity(this, (int) System.currentTimeMillis(), intent, 0);
 
+        // Build notification
+        // Actions are just fake
+        Notification noti = new Notification.Builder(this)
+                .setContentTitle("New mail from " + "test@gmail.com")
+                .setContentText("Subject").setSmallIcon(R.drawable.ic_menu_send)
+                .setContentIntent(pIntent)
+                .addAction(R.drawable.ic_food, "Call", pIntent)
+                .addAction(R.drawable.ic_food, "More", pIntent)
+                .addAction(R.drawable.ic_food, "And more", pIntent).build();
+        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        // hide the notification after its selected
+        noti.flags |= Notification.FLAG_AUTO_CANCEL;
+
+        notificationManager.notify(0, noti);
+
+    }
 }

@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -36,22 +37,26 @@ import java.util.List;
 
 import ke.co.edgar.waks.R;
 import ke.co.edgar.waks.app.AppConfig;
+import ke.co.edgar.waks.fragments.MainFragment;
 
 
-public class DashBoard extends Fragment {
+public class DashBoard extends Fragment  {
     private List<Job> jobList = new ArrayList<>();
     private RecyclerView recyclerView;
     private JobsAdapter mAdapter;
     private ProgressDialog pDialog;
     private static final String TAG = DashBoard.class.getSimpleName();
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     @Nullable
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
-        RelativeLayout rootView = (RelativeLayout) inflater.inflate(R.layout.dashboard_layout, container, false);
+        SwipeRefreshLayout rootView = (SwipeRefreshLayout ) inflater.inflate(R.layout.dashboard_layout, container, false);
         recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
         mAdapter = new JobsAdapter(jobList);
+        swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_refresh_layout);
+
         recyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);
@@ -63,21 +68,38 @@ public class DashBoard extends Fragment {
         //recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(mAdapter);
 
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                swipeRefreshLayout.setRefreshing(true);
+                prepareMovieData();
+
+            }
+        });
+        /**
+         * Showing Swipe Refresh animation on activity create
+         * As animation won't start on onCreate, post runnable is used
+         */
+        swipeRefreshLayout.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        swipeRefreshLayout.setRefreshing(true);
+                                        prepareMovieData();
+
+                                    }
+                                }
+        );
+
         recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getActivity().getApplicationContext(), recyclerView, new ClickListener() {
             @Override
             public void onClick(View view, int position) {
                 Job job = jobList.get(position);
                 Toast.makeText(getActivity().getApplicationContext(), job.getTitle() + " is selected!", Toast.LENGTH_SHORT).show();
-                startDetailFragment(job.getID());
-                getActivity().finish();
-            }
-
-            private void startDetailFragment(int jobID) {
-
                 Intent intent = new Intent(getActivity(), DetailActivity.class);
-                intent.putExtra("jobID", jobID);
+                intent.putExtra("jobID", job.getID());
+                Log.d(TAG, "IntentDone: "+ job.getID());
                 startActivity(intent);
-
+                getActivity().finish();
             }
 
             @Override
@@ -89,7 +111,6 @@ public class DashBoard extends Fragment {
         pDialog = new ProgressDialog(getActivity());
         pDialog.setCancelable(false);
         prepareMovieData();
-
         return rootView;
     }
 
@@ -112,20 +133,19 @@ public class DashBoard extends Fragment {
                             if (!error) {
                                 Log.d(TAG, "we never get here ");
                                 JSONArray jobs = jObj.getJSONArray("jobs");
-
                                 Log.d(TAG, "get array from obj" + jobs);
                                 Log.d(TAG, "size" + jobs.length());
                                 for (int i = 0; i < jobs.length(); i++) {
                                     Log.d(TAG, "LoopJob: ");
                                     JSONObject j = (JSONObject) jobs.get(i);
-                                    int id = j.getInt("id");
+                                    String id = j.getString("id");
                                     String title = j.getString("title");
                                     String description = j.getString("description");
                                     String type = j.getString("type");
                                     String salaryAmount = j.getString("salary");
                                     String location = j.getString("location");
                                     String created_at = j.getString("time_posted");
-                                    Log.d(TAG, "LoopDone: ");
+                                    Log.d(TAG, "LoopDone: "+id);
                                     Job addjob = new Job(id, title, description, created_at, location, salaryAmount, type);
                                     jobList.add(addjob);
 
@@ -133,6 +153,8 @@ public class DashBoard extends Fragment {
                                 }
 
                                 mAdapter.notifyDataSetChanged();
+                                // stopping swipe refresh
+                                swipeRefreshLayout.setRefreshing(false);
                             } else {
                                 // Error in login. Get the error message
                                 String errorMsg = jObj.getString("error_msg");
@@ -150,11 +172,14 @@ public class DashBoard extends Fragment {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.d("Error.Response", "could not process json");
+                        Toast.makeText(getActivity().getApplicationContext(), "something went wrong: ", Toast.LENGTH_LONG).show();
                     }
                 }
         );
         queue.add(getRequest);
         hideDialog();
+        // stopping swipe refresh
+        swipeRefreshLayout.setRefreshing(false);
     }
 
     public interface ClickListener {
